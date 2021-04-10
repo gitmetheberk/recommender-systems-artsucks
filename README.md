@@ -25,3 +25,7 @@ The site will be hosted using DigitalOcean's free $100 credit/2 month trial.
 ### Feature generation
 
 This will be done with some magic function involving CNNs.
+
+### Sources/Libraries
+* create-react-app - https://github.com/facebook/create-react-app
+* TODO: Complete sources/libraries
