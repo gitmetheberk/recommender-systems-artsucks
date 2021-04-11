@@ -9,8 +9,7 @@ class ImageWindow extends Component {
 
     state = { 
         imageTitle: "",
-        imageUrl: requestUrl + "static/images/loading.gif",  // Default to a loading gif
-        //imageUrl: "http://localhost:8000/static/images/Eugene_Delacroix_7.jpg",
+        imageUrl: "",
         imageId: -1,
      }
 
@@ -57,22 +56,39 @@ class ImageWindow extends Component {
         this.getNewImage();
     }
 
-    // TODO If we don't have a token, show a "please sign in message" or pull for random artworks
-    // TODO Find a way to make the image box consistent, ex. images all scale to the same maximum width AND HEIGHT
-    render() { 
-        return (
-            <div className="h-auto">
-                <img className="rounded mw-100 mh-auto"
-                    src={this.state.imageUrl} 
-                    alt={this.state.imageTitle}>
-                </img>
+    checkLoggedIn(){
+        if (this.props.token !== ""){
+            this.getNewImage()
+        } else {
+            alert("Something tells me you don't really want to appreciate art...")
+        }
+    }
 
+    render() { 
+        if (this.state.imageId === -1){
+            return (
                 <div>
-                    <button onClick={() => this.handleClick(false)} className="btn btn-secondary w-50">Dislike</button>
-                    <button onClick={() => this.handleClick(true)} className="btn btn-success w-50">Like</button>
+                    <h3>Howdy! Please log in to receive your full art appreciation experience</h3>
+                    <button onClick={() => this.checkLoggedIn()} className="btn btn-danger btn-block btn-lg">I have logged in and I am ready to appreciate art</button>
                 </div>
-            </div>
-        );
+            )
+        } else {
+            return (
+                <div style={{width: 1000, height: 650}} className="d-flex flex-column">
+                    <div style={{width: 1000, height: 650}} className="rounded bg-secondary d-flex justify-content-center align-items-center">
+                        <img style={{display: "block", 'max-width': 1000, 'max-height': 600, width: 'auto', height: 'auto'}}
+                            src={this.state.imageUrl} 
+                            alt={this.state.imageTitle}>
+                        </img>
+                    </div>
+    
+                    <div className="pt-1">
+                        <button onClick={() => this.handleClick(false)} className="btn btn-warning w-50">Dislike</button>
+                        <button onClick={() => this.handleClick(true)} className="btn btn-success w-50">Like</button>
+                    </div>
+                </div>
+            );
+        }
     }
 }
  
