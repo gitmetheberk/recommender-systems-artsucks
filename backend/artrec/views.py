@@ -69,3 +69,8 @@ class UserCreate(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+# AUTH resolver, returns (user, userProfile) from an http request with an auth token
+def resolveuserfromrequest(request):
+    token = request.headers['Authorization'].replace('token ', '')
+    user = Token.objects.get(key=token).user
+    return (user, UserProfile.objects.get(user=user))
