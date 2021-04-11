@@ -19,11 +19,11 @@ from django.urls import path, include
 from rest_framework import routers
 from artrec import views
 
-# Setup a router for artworks, user profiles, and history lines
+# Setup a router for artworks, user profiles, and history lines as DB views
 router = routers.DefaultRouter()
 router.register(r'artworks', views.ArtworkView)
 router.register(r'userprofiles', views.UserProfileView)
-router.register(r'historyLines', views.HistoryLineView)
+router.register(r'historylines', views.HistoryLineView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
