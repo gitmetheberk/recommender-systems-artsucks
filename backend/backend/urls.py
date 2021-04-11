@@ -29,8 +29,13 @@ router.register(r'userprofiles', views.UserProfileView)
 router.register(r'historylines', views.HistoryLineView)
 router.register(r'getnewart', views.GetNewArt, basename='GetNewArt')
 
+# Development router for test functions/apis/etc.
+router_dev = routers.DefaultRouter()
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api-token-auth/', obtain_auth_token, name="api_token_auth")
+    path('auth/api-token-auth/', obtain_auth_token, name="api_token_auth"),
+    path('auth/register/', views.UserCreate.as_view()),
+    path('dev/', include(router_dev.urls)),
 ]

@@ -13,18 +13,18 @@ class Login extends Component {
         token: ""
      }
 
-    login(event){
+    formSubmit(event){
         // Stops the website from reloading on submit
         event.preventDefault()
+        this.login()
+    }
 
-        // This probably has something to do with the async nature of things, but I can't directly
-        // reference this.state in the post request, so these have to be here, otherwise the entire
-        // payload is blank (which causes a lot of headaches...)
+    login(){
         let username = this.state.username;
         let password = this.state.password;
 
         // Send an auth request to the server
-        axios.post(requestUrl + 'api-token-auth/', {
+        axios.post(requestUrl + 'auth/api-token-auth/', {
                 username: username,
                 password: password
         })
@@ -42,6 +42,26 @@ class Login extends Component {
         })
         .catch((error) => {
             this.setState({password: ""})
+            alert("There was an error loggin you in. Please try again.")
+            console.log(error)
+        })
+    }
+
+    register(){
+        let username = this.state.username;
+        let password = this.state.password;
+
+        // Register the new user
+        axios.post(requestUrl + 'auth/register/', {
+            username: username,
+            password: password
+        })
+        .then((res) => {
+            this.login()
+        })
+        .catch((error) => {
+            this.setState({password: "", username: ""})
+            alert("There was an error creating your account. Please try again.")
             console.log(error)
         })
     }
@@ -59,27 +79,28 @@ class Login extends Component {
         if (this.state.logged_in === true){
             return (
                 <div className="d-flex p-2 bg-secondary flex-column rounded-left">
-                <div>
-                    <h5 >Welcome,</h5>
-                    <h5 className="float-right">{this.state.username}!</h5>
-                </div>
+                    <div>
+                        <h5 >Welcome,</h5>
+                        <h5 className="float-right">{this.state.username}!</h5>
+                    </div>
                 </div>
             )
         }  // Else
         return ( 
             <div className="d-flex p-2 bg-secondary flex-column rounded-left">
-                <h5 className="">Login</h5>
-                <form onSubmit ={(event) => this.login(event)}>
+                <h5 className="">Login or Register</h5>
+                <form onSubmit ={(event) => this.formSubmit(event)}>
                     <div className="p-1">
                     <input value={this.state.username} onChange={evt => this.updateUsername(evt)} placeholder="Username" type="text" name="username" />
                     </div>
                     <div className="p-1">
                     <input value={this.state.password} onChange={evt => this.updatePassword(evt)} placeholder="Password" type="password" name="password" />
                     </div>
-                    <div className="p-1">
-                        <input type="submit" value="Login" className="float-right"/>
-                    </div>
-                </form>
+                    </form>
+                <div className="p-1 btn-group btn-group-justified">
+                    <button onClick={() => this.login()} className="float-left btn btn-success w-50">Login</button>
+                    <button onClick={() => this.register()} className="float-right btn btn-primary w-50">Register</button>
+                </div>
             </div>
          );
     }

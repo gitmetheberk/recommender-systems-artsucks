@@ -1,24 +1,25 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from rest_framework.mixins import (
-    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-)
+from rest_framework import generics
 
 # Import the serialziers
 from .serializers import ArtworkSerializer
 from .serializers import UserProfileSerializer
 from .serializers import HistoryLineSerializer
+from .serializers import UserSerializer
 
 # Import the models
 from .models import Artwork
 from .models import UserProfile
 from .models import HistoryLine
+from .models import User
 
 # Authentication imports
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
 
 # Functional API imports
 from random import randint
@@ -50,9 +51,21 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
     # the token belongs to, this is the function which should then return the next piece of art
     # Right now it's only returning a random piece of art, but all you have to do recommender-wise is
     # Set the value of 'art' to the ID of the piece of art we want to recommend
-    def list(self, response):
+    def list(self, request):
+        # Grabs the user object and the userprofile object from the auth token to be used later
+        user, userprofile = resolveuserfromrequest(request)
+
+        # Randomly get an art for the user
         num_arts = 6
         art = randint(1,6) % num_arts + 1
-
         queryset = Artwork.objects.get(pk=art)
         return Response(ArtworkSerializer(queryset).data)
+
+
+
+# AUTH functions
+class UserCreate(generics.CreateAPIView):
+    permission_classes = (AllowAny, )
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+

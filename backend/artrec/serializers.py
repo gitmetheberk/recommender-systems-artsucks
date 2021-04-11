@@ -4,6 +4,7 @@ from rest_framework import serializers
 from .models import Artwork
 from .models import UserProfile
 from .models import HistoryLine
+from .models import User
 
 class ArtworkSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,3 +20,18 @@ class HistoryLineSerializer(serializers.ModelSerializer):
     class Meta:
         model = HistoryLine
         fields = ('artwork', 'user', 'status', 'weight', 'updated')
+
+
+# Used in new account creation
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
