@@ -20,8 +20,10 @@ class Artwork(models.Model):
 
 # One entry for every user, creating a new user should create a new UserProfile
 class UserProfile(models.Model):
-    # Manually defined internalUserId to prevent any issues related to the ratings matrix/feature vectors
-    internalUserId = models.BigAutoField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
+
+    # This value will help us locate this user in the ratings matrix and will be hardcoded at the time of calculations, etc.
+    recommenderUserId = models.IntegerField(blank=True, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # Will be used later when determining a user's computer/human generated art score ()

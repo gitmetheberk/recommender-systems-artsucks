@@ -14,7 +14,7 @@ class ArtworkSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ('internalUserId', 'user', 'humanArtLiked', 'computerArtLiked')
+        fields = ('id', 'recommenderUserId', 'user', 'humanArtLiked', 'computerArtLiked')
 
 class HistoryLineSerializer(serializers.ModelSerializer):
     class Meta:

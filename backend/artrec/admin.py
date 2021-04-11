@@ -11,7 +11,7 @@ class ArtworkAdmin(admin.ModelAdmin):
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('internalUserId', 'user')
+    list_display = ('id', 'recommenderUserId', 'user', 'humanArtLiked', 'computerArtLiked')
 
 
 class HistoryLineAdmin(admin.ModelAdmin):
