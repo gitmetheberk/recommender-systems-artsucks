@@ -27,10 +27,10 @@ router = routers.DefaultRouter()
 router.register(r'artworks', views.ArtworkView)
 router.register(r'userprofiles', views.UserProfileView)
 router.register(r'historylines', views.HistoryLineView)
+router.register(r'getnewart', views.GetNewArt, basename='GetNewArt')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('dev/', views.test_auth.as_view(), name='test_auth'),
     path('api-token-auth/', obtain_auth_token, name="api_token_auth")
 ]
