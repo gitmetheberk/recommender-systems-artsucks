@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios'
 
 // FIXME: Find a better way than hardcoding this in multiple files
-// Using local-cors-proxy node js module run
+// Using local-cors-proxy node js module
 const requestUrl = "http://localhost:8010/proxy/"
 
 class Login extends Component {

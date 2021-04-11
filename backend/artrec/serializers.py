@@ -19,6 +19,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class HistoryLineSerializer(serializers.ModelSerializer):
     class Meta:
         model = HistoryLine
+        read_only_fields = ('user',)
         fields = ('artwork', 'user', 'status', 'weight', 'updated')
 
 

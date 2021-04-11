@@ -28,6 +28,7 @@ router.register(r'artworks', views.ArtworkView)
 router.register(r'userprofiles', views.UserProfileView)
 router.register(r'historylines', views.HistoryLineView)
 router.register(r'getnewart', views.GetNewArt, basename='GetNewArt')
+router.register(r'getrecenthistory', views.GetRecentHistory, basename='GetRecentHistory')
 
 # Development router for test functions/apis/etc.
 router_dev = routers.DefaultRouter()

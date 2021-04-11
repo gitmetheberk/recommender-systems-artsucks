@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios'
 
 // FIXME: Find a better way than hardcoding this in multiple files
-// Using local-cors-proxy node js module run
+// Using local-cors-proxy node js module
 const requestUrl = "http://localhost:8010/proxy/"
 
 class ImageWindow extends Component {
@@ -40,11 +40,10 @@ class ImageWindow extends Component {
     handleClick(liked){
         // Send a put request updating the user's rating for the image
         // Note: Using put instead of post in the event we end up doubling over some images
-        //let imageId = this.imageId;
-        let imageId = 3;
+        let image = this.state.imageId;
         let token = this.props.token;
         // TODO Programatically don't require the user for post requests in the backend, let it be chosen by the token
-        axios.post(requestUrl + 'api/historylines/', {artwork: imageId, status: liked ? 'L' : 'D', user:4},
+        axios.post(requestUrl + 'api/historylines/', {artwork: image, status: liked ? 'L' : 'D'},
         {
             headers :{
             'Authorization': `token ${token}` 
