@@ -131,3 +131,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+# Authorize cors requests on localhost
+CORS_ORIGIN_WHITELIST = [
+     'http://localhost:3000'
+]
