@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 
-// Proxy doesn't seem to want to work, hardcode up here instead
-const requestUrl = "http://localhost:8000/"
+// Using local-cors-proxy node js module run
+const requestUrl = "http://localhost:8010/proxy/"
 
 class ImageWindow extends Component {
     state = { 
@@ -14,29 +14,33 @@ class ImageWindow extends Component {
 
 
     // On first load, get a new image
-    // componentDidMount() {
-    //     this.getImage();
-    // }
+    componentDidMount() {
+        this.getNewImage();
+    }
     
     // Updates state after receiving new data
     updateImage(res){
         let imageUrl = requestUrl + "static/images/" + res.filename;
         this.setState({
             imageUrl: imageUrl,
-            imageArtist: artist,
-            imageId: id
+            imageArtist: res.artist,
+            imageId: res.id
         })
+    }
+
+    getNewImage(){
+        // Send a get request to get the url of the next image
+        axios.get(requestUrl + 'api/artworks')
+        .then((res) => this.updateImage(res))
     }
 
     // Runs when either like or dislike is clicked, liked=true if liked, else dislike
     handleClick(liked){
         // Send a put request updating the user's rating for the image
         // Note: Using put instead of post in the event we end up doubling over some images
-        axios.put(requestUrl + 'api/artrec', {imageId: this.imageId, like: liked});
+        axios.put(requestUrl + 'api/historylines', {imageId: this.imageId, like: liked});
 
-        // Send a get request to get the url of the next image
-        axios.get(requestUrl + 'api/artrec')
-        .then((res) => this.updateImage(res))
+        this.getNewImage();
     }
 
 
