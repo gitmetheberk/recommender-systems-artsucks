@@ -19,6 +19,9 @@ from django.urls import path, include
 from rest_framework import routers
 from artrec import views
 
+# Authentication imports
+from rest_framework.authtoken.views import obtain_auth_token
+
 # Setup a router for artworks, user profiles, and history lines as DB views
 router = routers.DefaultRouter()
 router.register(r'artworks', views.ArtworkView)
@@ -27,5 +30,7 @@ router.register(r'historylines', views.HistoryLineView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('dev/', views.test_auth.as_view(), name='test_auth'),
+    path('api-token-auth/', obtain_auth_token, name="api_token_auth")
 ]

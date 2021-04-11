@@ -26,9 +26,6 @@ SECRET_KEY = 'django-insecure-ed$!7#ogt=(&je*92l@ttrr27#zg$%73*^qbspj6o36m9g_gjr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,8 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
     'artrec',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -52,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -134,7 +139,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# Authorize cors requests on localhost
+# Authorize cors requests on localhost (though... most browsers don't really like this...)
+CORS_ORIGIN_ALLOW_ALL = False
+ALLOWED_HOSTS = ['localhost']
 CORS_ORIGIN_WHITELIST = [
      'http://localhost:3000'
 ]

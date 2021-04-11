@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# Authentication imports
+from rest_framework.authtoken.models import Token
+from django.db.models.signals import post_save
+from django.core.signals import request_finished
+from django.dispatch import receiver
+
 # Create your models here.
 # One entry for every piece of art in our database
 class Artwork(models.Model):
@@ -50,3 +56,10 @@ class HistoryLine(models.Model):
     # Potentially used later to assign weights based on how long ago this history line was created
     weight = models.SmallIntegerField(default=None, blank=True, null=True)
     updated = models.DateTimeField(auto_now=True)
+
+# When a new user is created, create an AUTH token & user profile
+@receiver(post_save, sender=User)
+def new_user(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+        UserProfile(user=instance).save()
