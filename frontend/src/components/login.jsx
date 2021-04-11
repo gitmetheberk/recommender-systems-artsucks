@@ -78,7 +78,7 @@ class Login extends Component {
     render() { 
         if (this.state.logged_in === true){
             return (
-                <div className="d-flex p-2 bg-secondary flex-column rounded-left">
+                <div className="d-flex p-2 bg-success flex-column rounded-left">
                     <div>
                         <h5 >Welcome,</h5>
                         <h5 className="float-right">{this.state.username}!</h5>

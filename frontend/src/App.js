@@ -21,7 +21,7 @@ class App extends Component {
 
   render(){
     return (
-      <div className="d-flex flex-row justify-content-between ">
+      <div className="d-flex flex-row justify-content-between bg-light">
         <div className="p-0"><HistorySidebar /></div>
         <div className="p-5"><ImageWindow token={this.state.token}/></div>
         <div className="p-0"><Login sendToken={this.receiveToken.bind(this)}/></div>
