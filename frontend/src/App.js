@@ -5,8 +5,9 @@ import ImageWindow from './components/imageWindow';
 import HistorySidebar from './components/historySidebar'
 import Login from './components/login'
 
-// This is at the bottom of the priorities list
+// Other items lower on the priorities list
 //import RoboticStatusBar from './components/roboticStatusBar'
+// Make history panel and login sidebar collapsable
 
 function App() {
   return (
