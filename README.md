@@ -25,3 +25,10 @@ The site will be hosted using DigitalOcean's free $100 credit/2 month trial.
 ### Feature generation
 
 This will be done with some magic function involving CNNs.
+
+### Sources/Libraries
+* create-react-app - https://github.com/facebook/create-react-app
+* tutorial: https://www.digitalocean.com/community/tutorials/build-a-to-do-application-using-django-and-react
+* tutorial: https://www.youtube.com/watch?v=Ke90Tje7VS0&t=1542s
+* tutorial: https://simpleisbetterthancomplex.com/tutorial/2018/11/22/how-to-implement-token-authentication-using-django-rest-framework.html
+* TODO: Complete sources/libraries
