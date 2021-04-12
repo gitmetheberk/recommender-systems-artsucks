@@ -82,7 +82,7 @@ class ImageWindow extends Component {
             return (
                 <div style={{width: 1000, height: 650}} className="d-flex flex-column">
                     <div style={{width: 1000, height: 650}} className="rounded bg-secondary d-flex justify-content-center align-items-center">
-                        <img style={{display: "block", 'max-width': 1000, 'max-height': 600, width: 'auto', height: 'auto'}}
+                        <img style={{display: "block", 'maxWidth': 1000, 'maxHeight': 600, width: 'auto', height: 'auto'}}
                             src={this.state.imageUrl} 
                             alt={this.state.imageTitle}>
                         </img>

@@ -36,9 +36,9 @@ class HistorySidebar extends Component {
         // Convert the JSON object to a simple list for map
         let history = Object.values(this.state.history)
 
-        return history.map((line) => {
+        return history.map((line, index) => {
             return (
-            <li class="list-group-item bg-primary">
+            <li key={index} className="list-group-item bg-primary">
                 <HistoryLine history={line}/>
             </li>
     
@@ -50,10 +50,10 @@ class HistorySidebar extends Component {
         return ( 
             <div style={{width: '250px', height: '800px'}} className="rectangle bg-info rounded-right">
                 <div className="card border-0">
-                    <div class="card-header bg-info">
+                    <div className="card-header bg-info">
                         <h4><p className="text-center">Your History</p></h4>
                     </div>
-                    <ul class="list-group list-group-flush">
+                    <ul className="list-group list-group-flush">
                         {this.renderHistoryLines()}
                     </ul>
                 </div>
