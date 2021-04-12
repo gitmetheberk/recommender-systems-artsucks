@@ -7,7 +7,7 @@ class HistoryLine extends Component {
         return ( 
             <div className="">
                 <span className="text-right">{this.props.history.status === "L" ? '✅' : '❌'}</span>
-                <span className=""> Artist: {this.props.history.artist}</span>
+                <span className="font-weight-bold">{this.props.history.artist}</span>
                 <br/>
                 <span>{date.toLocaleString()}</span>
             </div> 

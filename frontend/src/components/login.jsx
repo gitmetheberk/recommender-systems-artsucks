@@ -42,7 +42,7 @@ class Login extends Component {
         })
         .catch((error) => {
             this.setState({password: ""})
-            alert("There was an error loggin you in. Please try again.")
+            alert("There was an error logging you in. Please try again.")
             console.log(error)
         })
     }

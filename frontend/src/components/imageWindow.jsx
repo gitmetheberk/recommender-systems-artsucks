@@ -89,8 +89,8 @@ class ImageWindow extends Component {
                     </div>
     
                     <div className="pt-1">
-                        <button onClick={() => this.handleClick(false)} className="btn btn-warning w-50">Dislike</button>
-                        <button onClick={() => this.handleClick(true)} className="btn btn-success w-50">Like</button>
+                        <button onClick={() => this.handleClick(false)} className="btn btn-warning w-50 font-weight-bold">Dislike</button>
+                        <button onClick={() => this.handleClick(true)} className="btn btn-success w-50 font-weight-bold">Like</button>
                     </div>
                 </div>
             );
