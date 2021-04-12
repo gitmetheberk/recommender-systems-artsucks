@@ -48,6 +48,10 @@ class ImageWindow extends Component {
             headers :{
             'Authorization': `token ${token}` 
         }})
+        .then(() => {
+            // After response received, update history
+            this.props.updateHistory()
+        })
         .catch((err) => {
             console.log(err)
         });
@@ -65,6 +69,9 @@ class ImageWindow extends Component {
 
     render() { 
         if (this.state.imageId === -1){
+            // Technically I put this in originally because I didn't know how to signal between components
+            // However, I like it better than having it start automatically, just for the sake of the joke
+            // So it's staying in
             return (
                 <div>
                     <h3>Howdy! Please log in to receive your full art appreciation experience</h3>
