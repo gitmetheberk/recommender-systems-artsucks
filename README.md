@@ -31,4 +31,7 @@ This will be done with some magic function involving CNNs.
 * tutorial: https://www.digitalocean.com/community/tutorials/build-a-to-do-application-using-django-and-react
 * tutorial: https://www.youtube.com/watch?v=Ke90Tje7VS0&t=1542s
 * tutorial: https://simpleisbetterthancomplex.com/tutorial/2018/11/22/how-to-implement-token-authentication-using-django-rest-framework.html
+* https://nemecek.be/blog/23/how-to-createregister-user-account-with-django-rest-framework-api
+* https://stackoverflow.com/questions/20555673/django-query-get-last-n-records
+* https://stackoverflow.com/questions/32679945/django-rest-framework-custom-post-permissions
 * TODO: Complete sources/libraries
