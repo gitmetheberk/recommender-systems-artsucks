@@ -10,13 +10,13 @@ The ART SUCKS recommender is an ensemble recommender system which uses both Cont
 
 ### Frontend
 
-The frontend will be built using React and Bootstrap running on a standalone frontend server. It will communicate with the backend only over API.
+The frontend will be built using React and Bootstrap running on a standalone frontend server. It will communicate with the backend only over APIs. Create-react-app was used as a jumping off point, more information is available at https://github.com/facebook/create-react-app
 
 ![UI layout](./images/UI_Sketch.png)
 
 ### Backend
 
-The backend will be built on Django. Create-react-app was used as a jumping off point, more information is available at https://github.com/facebook/create-react-app
+The backend will be built on Django using the default Django project and app structure.
 
 ### Hosting
 
