@@ -141,7 +141,8 @@ STATICFILES_DIRS = [
 
 # Authorize cors requests on localhost (though... most browsers don't really like this...)
 CORS_ORIGIN_ALLOW_ALL = False
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost','104.236.113.146']
 CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000'
+     'http://localhost:3000',
+     'http://104.236.113.146:3000'
 ]

@@ -4,7 +4,7 @@ import HistoryLine from './historyLine'
 
 // FIXME: Find a better way than hardcoding this in multiple files
 // Using local-cors-proxy node js module
-const requestUrl = "http://localhost:8010/proxy/"
+const requestUrl = "http://104.236.113.146:8010/proxy/"
 
 class HistorySidebar extends Component {
     state = { 
