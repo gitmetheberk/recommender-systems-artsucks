@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 
+// TODO: Move this into props from the parent component
 // FIXME: Find a better way than hardcoding this in multiple files
 // Using local-cors-proxy node js module
 const requestUrl = "http://localhost:8010/proxy/"
