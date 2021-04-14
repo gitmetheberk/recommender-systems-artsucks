@@ -6,10 +6,10 @@ class HistoryLine extends Component {
         let date = new Date(Date.parse(this.props.history.updated))
         return ( 
             <div className="">
-                <span className="text-right">{this.props.history.status === "L" ? '✅' : '❌'}</span>
+                <span className="text-right">{this.props.history.status === "L" ? '✅ ' : '❌ '}</span>
                 <span className="font-weight-bold">{this.props.history.artist}</span>
                 <br/>
-                <span>{date.toLocaleString()}</span>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{date.toLocaleString()}</span>
             </div> 
         );
     }
