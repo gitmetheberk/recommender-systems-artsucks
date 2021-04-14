@@ -67,4 +67,4 @@ def new_user(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)  # Create a new token
         UserProfile(user=instance).save()  # Create a new userProfile
-        instance.groups.add(Group.objects.get(name="uncultured_student"))  # Set default group
+        instance.groups.add(Groups.objects.get(name="uncultured_student"))  # Set default group
