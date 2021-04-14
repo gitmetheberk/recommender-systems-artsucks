@@ -7,8 +7,12 @@ import HistorySidebar from './components/historySidebar'
 import Login from './components/login'
 
 // Other items lower on the priorities list
-//import RoboticStatusBar from './components/roboticStatusBar'
+// import RoboticStatusBar from './components/roboticStatusBar'
 // Make history panel and login sidebar collapsable
+
+// Request URL, use 104... for a server commit, use local for testing
+//const requestUrl = "http://104.236.113.146:8010/proxy/"
+ const requestUrl = "http://localhost:8010/proxy/"
 
 class App extends Component {
   state = {
@@ -29,9 +33,9 @@ class App extends Component {
   render(){
     return (
       <div className="d-flex flex-row justify-content-between bg-light">
-        <div className="p-0"><HistorySidebar token={this.state.token} updateHistory={this.state.updateHistory}/></div>
-        <div className="p-5"><ImageWindow updateHistory={this.updateHistory.bind(this)} token={this.state.token}/></div>
-        <div className="p-0"><Login sendToken={this.receiveToken.bind(this)}/></div>
+        <div className="p-0"><HistorySidebar token={this.state.token} updateHistory={this.state.updateHistory} requestUrl={requestUrl}/></div>
+        <div className="p-5"><ImageWindow updateHistory={this.updateHistory.bind(this)} token={this.state.token} requestUrl={requestUrl}/></div>
+        <div className="p-0"><Login sendToken={this.receiveToken.bind(this)} requestUrl={requestUrl}/></div>
       </div>
     );
   }

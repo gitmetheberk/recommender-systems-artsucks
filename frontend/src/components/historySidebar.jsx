@@ -2,11 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import HistoryLine from './historyLine'
 
-// TODO: Move this into props from the parent component
-// FIXME: Find a better way than hardcoding this in multiple files
-// Using local-cors-proxy node js module
-const requestUrl = "http://104.236.113.146:8010/proxy/"
-
 class HistorySidebar extends Component {
     state = { 
         history: {},
@@ -22,7 +17,7 @@ class HistorySidebar extends Component {
     getHistory(){
         if (this.props.token !== ""){
             let token = this.props.token
-            axios.get(requestUrl + 'api/getrecenthistory', {
+            axios.get(this.props.requestUrl + 'api/getrecenthistory', {
                 headers :{
                 'Authorization': `token ${token}`
             }})

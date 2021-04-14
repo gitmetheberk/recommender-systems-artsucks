@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 
-// TODO: Move this into props from the parent component
-// FIXME: Find a better way than hardcoding this in multiple files
-// Using local-cors-proxy node js module
-const requestUrl = "http://104.236.113.146:8010/proxy/"
 
 class Login extends Component {
     state = { 
@@ -25,7 +21,7 @@ class Login extends Component {
         let password = this.state.password;
 
         // Send an auth request to the server
-        axios.post(requestUrl + 'auth/api-token-auth/', {
+        axios.post(this.props.requestUrl + 'auth/api-token-auth/', {
                 username: username,
                 password: password
         })
@@ -53,7 +49,7 @@ class Login extends Component {
         let password = this.state.password;
 
         // Register the new user
-        axios.post(requestUrl + 'auth/register/', {
+        axios.post(this.props.requestUrl + 'auth/register/', {
             username: username,
             password: password
         })
