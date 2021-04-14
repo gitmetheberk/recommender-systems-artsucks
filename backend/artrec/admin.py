@@ -7,7 +7,7 @@ from .models import HistoryLine
 
 # Define list views for the models
 class ArtworkAdmin(admin.ModelAdmin):
-    list_display = ('id','filename', 'artist', 'humanGenerated')
+    list_display = ('id', 'recommenderArtId', 'filename', 'artist', 'humanGenerated')
 
 
 class UserProfileAdmin(admin.ModelAdmin):
@@ -15,7 +15,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 
 class HistoryLineAdmin(admin.ModelAdmin):
-    list_display = ('user', 'status', 'weight', 'updated')
+    list_display = ('id', 'artwork', 'user', 'status', 'weight', 'updated')
 
 
 # Register the models

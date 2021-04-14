@@ -11,8 +11,10 @@ from django.dispatch import receiver
 # One entry for every piece of art in our database
 class Artwork(models.Model):
     # id
+    recommenderArtId = models.IntegerField(blank=True, null=True)  # Used internally by the recommender
     filename = models.CharField(max_length=200)  # Ex. Eugene_Delacroix_7.jpg
     artist = models.CharField(max_length=200)  # Ex. Eugene Delacroix
+
 
     # Will be used later when determining a user's computer/human generated art score ()
     humanGenerated = models.BooleanField()

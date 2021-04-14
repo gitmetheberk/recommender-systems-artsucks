@@ -9,7 +9,7 @@ from .models import User
 class ArtworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artwork
-        fields = ('id', 'filename', 'artist', 'humanGenerated')
+        fields = ('id', 'recommenderArtId', 'filename', 'artist', 'humanGenerated')
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,7 +20,7 @@ class HistoryLineSerializer(serializers.ModelSerializer):
     class Meta:
         model = HistoryLine
         read_only_fields = ('user',)
-        fields = ('artwork', 'user', 'status', 'weight', 'updated')
+        fields = ('id', 'artwork', 'user', 'status', 'weight', 'updated')
 
 
 # Used in new account creation
