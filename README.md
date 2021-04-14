@@ -22,6 +22,8 @@ The backend will be built on Django using the default Django project and app str
 
 The site will be hosted using DigitalOcean's free $100 credit/2 month trial.
 
+The site can be accessed at [http://104.236.113.146:3000](http://104.236.113.146:3000).
+
 ### Feature generation
 
 This will be done with some magic function involving CNNs.
