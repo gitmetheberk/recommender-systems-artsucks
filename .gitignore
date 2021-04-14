@@ -1,6 +1,8 @@
 # Ignore django db migration files
 migrations/
 
+# Ignore images in the django static images directory
+static/images/
 
 
 # Ignores for react-bootstrap from react-bootstrap/react-bootstrap
