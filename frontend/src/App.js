@@ -11,8 +11,8 @@ import Login from './components/login'
 // Make history panel and login sidebar collapsable
 
 // Request URL, use 104... for a server commit, use local for testing
-//const requestUrl = "http://104.236.113.146:8010/proxy/"
- const requestUrl = "http://localhost:8010/proxy/"
+const requestUrl = "http://104.236.113.146:8010/proxy/"
+// const requestUrl = "http://localhost:8010/proxy/"
 
 class App extends Component {
   state = {
