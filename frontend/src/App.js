@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import ImageWindow from './components/imageWindow';
 import HistorySidebar from './components/historySidebar'
 import Login from './components/login'
+import InfoBox from './components/infoBox'
 
 // Other items lower on the priorities list
 // import RoboticStatusBar from './components/roboticStatusBar'
@@ -29,13 +30,15 @@ class App extends Component {
     this.setState({updateHistory: !this.state.updateHistory})
   }
 
-  // TODO: Implement github links in bottom right
   render(){
     return (
       <div className="d-flex flex-row justify-content-between bg-light">
         <div className="p-0"><HistorySidebar token={this.state.token} updateHistory={this.state.updateHistory} requestUrl={requestUrl}/></div>
         <div className="p-5"><ImageWindow updateHistory={this.updateHistory.bind(this)} token={this.state.token} requestUrl={requestUrl}/></div>
-        <div className="p-0"><Login sendToken={this.receiveToken.bind(this)} requestUrl={requestUrl}/></div>
+        <div className="d-flex flex-column align-items-end">
+          <div className="p-0"><Login sendToken={this.receiveToken.bind(this)} requestUrl={requestUrl}/></div>
+          <div className="p-0 mt-auto"><InfoBox requestUrl={requestUrl}/></div>
+        </div>
       </div>
     );
   }
