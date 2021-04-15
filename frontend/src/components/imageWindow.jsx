@@ -33,10 +33,10 @@ class ImageWindow extends Component {
         })
     }
 
+    // TODO: When a user likes or dislikes an image, disable the buttons until the .then in getNewImage()
     // Runs when either like or dislike is clicked, liked=true if liked, else dislike
     handleClick(liked){
-        // Send a put request updating the user's rating for the image
-        // Note: Using put instead of post in the event we end up doubling over some images
+        // Send a post request updating the user's rating for the image
         let image = this.state.imageId;
         let token = this.props.token;
         axios.post(this.props.requestUrl + 'api/historylines/', {artwork: image, status: liked ? 'L' : 'D'},
@@ -75,10 +75,11 @@ class ImageWindow extends Component {
                 </div>
             )
         } else {
+	    let dims = {width: 1200, height: 780};
             return (
-                <div style={{width: 1000, height: 650}} className="d-flex flex-column">
-                    <div style={{width: 1000, height: 650}} className="rounded bg-secondary d-flex justify-content-center align-items-center">
-                        <img style={{display: "block", 'maxWidth': 1000, 'maxHeight': 600, width: 'auto', height: 'auto'}}
+                <div style={dims} className="d-flex flex-column">
+                    <div style={dims} className="rounded bg-secondary d-flex justify-content-center align-items-center">
+                        <img style={{display: "block", 'maxWidth': dims.width, 'maxHeight': dims.height-50, width: 'auto', height: 'auto'}}
                             src={this.state.imageUrl} 
                             alt={this.state.imageTitle}>
                         </img>
