@@ -25,6 +25,7 @@ from rest_framework.authtoken.models import Token
 
 # Functional API imports
 from random import randint
+import recommender
 
 # Database API views
 class ArtworkView(viewsets.ModelViewSet):
@@ -63,10 +64,12 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
         # Grabs the user object and the userprofile object from the auth token to be used later
         user, userprofile = resolveuserfromrequest(request)
 
+        # This will probably be what we want to do
+        art = recommender.recommendArt(user, userprofile)
+        
         # Randomly get an art for the user
-        num_arts = 6
-        art = randint(1,6) % num_arts + 1
-        queryset = Artwork.objects.get(pk=art)
+        art = randint(0,8445)
+        queryset = Artwork.objects.get(recommenderArtId=art)
         return Response(ArtworkSerializer(queryset).data)
 
 class GetRecentHistory(viewsets.ReadOnlyModelViewSet):
