@@ -4,6 +4,8 @@ migrations/
 # Ignore images in the django static images directory
 backend/static/images/
 
+# Ignore log files
+*.log
 
 # Ignores for react-bootstrap from react-bootstrap/react-bootstrap
 lib/
