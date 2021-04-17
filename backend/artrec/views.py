@@ -26,20 +26,26 @@ from rest_framework.authtoken.models import Token
 # Functional API imports
 from random import randint
 import recommender
+import numpy as np
+import copy
+
+
+# PROFILING
+import timeit
 
 # Database API views
 class ArtworkView(viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+#    permission_classes = (IsAuthenticated,)
     serializer_class = ArtworkSerializer
     queryset = Artwork.objects.all()
 
 class UserProfileView(viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+#    permission_classes = (IsAuthenticated,)
     serializer_class = UserProfileSerializer
     queryset = UserProfile.objects.all()
 
 class HistoryLineView(viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+#    permission_classes = (IsAuthenticated,)
     authentication_classes = (TokenAuthentication,) 
     serializer_class = HistoryLineSerializer
     queryset = HistoryLine.objects.all()
@@ -65,10 +71,108 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
         user, userprofile = resolveuserfromrequest(request)
 
         # This will probably be what we want to do
-        art = recommender.recommendArt(user, userprofile)
+        #  art = recommender.recommendArt(user, userprofile)
+        art = 0
         
-        # Randomly get an art for the user
-        art = randint(0,8445)
+        # Randomly get an art for the user if they've liked < 15 arts
+        history = HistoryLine.objects.filter(user=userprofile, status='L')
+        if len(history) < 15:
+            # TODO: The upper bound should be found programatically
+            # Generate random arts until we find one the user hasn't seen yet
+            art = randint(0,6923)
+            while HistoryLine.objects.filter(user=userprofile, artwork=Artwork.objects.get(recommenderArtId=art)).exists():
+                art = randint(0,6923)
+        
+        elif userprofile.queue0 != -1:
+            # Return an art from the queue
+#            q = copy.deepcopy(userprofile.queue)
+#            art = q.pop(0)
+#            userprofile.queue = copy.deepcopy(q)
+#
+#            print("Profile: {}, popped {}, queue is currently {}, saving".format(userprofile, art, userprofile.queue))
+#            userprofile.save()
+            
+            # This code is ugly, but I'm fed up with the JSON object not updating so here we are
+            if userprofile.queue8 != -1:
+                art = userprofile.queue8
+                userprofile.queue8 = -1
+            elif userprofile.queue7 != -1:
+                art = userprofile.queue7
+                userprofile.queue7 = -1
+            elif userprofile.queue6 != -1:
+                art = userprofile.queue6
+                userprofile.queue6 = -1
+            elif userprofile.queue5 != -1:
+                art = userprofile.queue5
+                userprofile.queue5 = -1
+            elif userprofile.queue4 != -1:
+                art = userprofile.queue4
+                userprofile.queue4 = -1
+            elif userprofile.queue3 != -1:
+                art = userprofile.queue3
+                userprofile.queue3 = -1
+            elif userprofile.queue2 != -1:
+                art = userprofile.queue2
+                userprofile.queue2 = -1
+            elif userprofile.queue1 != -1:
+                art = userprofile.queue1
+                userprofile.queue1 = -1
+            else:
+                art = userprofile.queue0
+                userprofile.queue0 = -1
+
+            # Only update queue fields 
+            # TODO: This should be done individually for each if/else block
+            userprofile.save(update_fields=["queue8", "queue7", "queue6", "queue5", "queue4", "queue3", "queue2", "queue1", "queue0"])
+
+        else:
+            start = timeit.default_timer()
+
+            # Find user's average profile
+            profile = userprofile.feature_profile
+            profile = np.asarray(profile)
+            profile = profile / (userprofile.computerArtLiked + userprofile.humanArtLiked)
+            
+            # Get distances between user_profile and each piece of art
+            distances = []
+            for artId in range(6924):
+                distances.append(np.linalg.norm(profile - np.asarray(Artwork.objects.get(recommenderArtId=artId).features)))
+                #print("PROGRESS: {}".format(artId))
+
+            # Collect the art IDs of the closest art's to the user's profile
+            closest_sorted = np.asarray(distances).argsort()
+
+            # Find 10 arts the user hasn't seen which are most similar to their current profile
+            artQueue = []
+            for artId in closest_sorted:
+                # Get the art object from the art id
+                art_object = Artwork.objects.get(recommenderArtId=artId)
+                if not HistoryLine.objects.filter(user=userprofile, artwork=art_object).exists():
+                    artQueue.append(int(artId))
+                    if len(artQueue) == 10:
+                        break
+
+            # Take the most-similar art and queue the rest
+            art = artQueue.pop(0)
+            print("ARTQUEUE: {}".format(artQueue))
+#            userprofile.queue = artQueue
+#            userprofile.save()
+            
+
+            userprofile.queue8 = artQueue.pop(0)
+            userprofile.queue7 = artQueue.pop(0)
+            userprofile.queue6 = artQueue.pop(0)
+            userprofile.queue5 = artQueue.pop(0)
+            userprofile.queue4 = artQueue.pop(0)
+            userprofile.queue3 = artQueue.pop(0)
+            userprofile.queue2 = artQueue.pop(0)
+            userprofile.queue1 = artQueue.pop(0)
+            userprofile.queue0 = artQueue.pop(0)
+
+            print("LOCALLY: {}".format(userprofile.queue0))
+            userprofile.save()
+            print("Recommended 10 arts in {} seconds".format((timeit.default_timer() - start)))
+            
         queryset = Artwork.objects.get(recommenderArtId=art)
         return Response(ArtworkSerializer(queryset).data)
 
@@ -81,6 +185,7 @@ class GetRecentHistory(viewsets.ReadOnlyModelViewSet):
         userprofile = resolveuserfromrequest(request)[1]
         last_ten = HistoryLine.objects.filter(user=userprofile).order_by('-id')[:10]
         serialized = {}
+        # TODO: Loop through queryset not iterate over length
         for i in range(len(last_ten)):
             serialized_line = HistoryLineSerializer(last_ten[i]).data
 
