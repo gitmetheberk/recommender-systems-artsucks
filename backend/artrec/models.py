@@ -102,7 +102,6 @@ def new_history(sender, instance=None, created=False, **kwargs):
             else:
                 instance.user.computerArtLiked += 1
 
-            # TODO: Add art features to user feature profile
             # If this is the user's first art, it is their entire profile
             if not instance.user.feature_profile:
                 instance.user.feature_profile = instance.artwork.features

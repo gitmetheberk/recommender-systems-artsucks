@@ -28,6 +28,7 @@ from random import randint
 import recommender
 import numpy as np
 import copy
+from scipy.spatial.distance import cosine
 
 
 # PROFILING
@@ -75,8 +76,9 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
         art = 0
         
         # Randomly get an art for the user if they've liked < 15 arts
+        # (Set to 14 due to ASYNC nonsense)
         history = HistoryLine.objects.filter(user=userprofile, status='L')
-        if len(history) < 15:
+        if len(history) < 14:
             # TODO: The upper bound should be found programatically
             # Generate random arts until we find one the user hasn't seen yet
             art = randint(0,6923)
@@ -85,45 +87,43 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
         
         elif userprofile.queue0 != -1:
             # Return an art from the queue
-#            q = copy.deepcopy(userprofile.queue)
-#            art = q.pop(0)
-#            userprofile.queue = copy.deepcopy(q)
-#
-#            print("Profile: {}, popped {}, queue is currently {}, saving".format(userprofile, art, userprofile.queue))
-#            userprofile.save()
-            
-            # This code is ugly, but I'm fed up with the JSON object not updating so here we are
+            # The reason we're using individual queue objects is not a good reason, but I can't be bothered to change it back since it still works
             if userprofile.queue8 != -1:
                 art = userprofile.queue8
                 userprofile.queue8 = -1
+                userprofile.save(update_fields=["queue8"]
             elif userprofile.queue7 != -1:
                 art = userprofile.queue7
                 userprofile.queue7 = -1
+                userprofile.save(update_fields=["queue7"]
             elif userprofile.queue6 != -1:
                 art = userprofile.queue6
                 userprofile.queue6 = -1
+                userprofile.save(update_fields=["queue6"]
             elif userprofile.queue5 != -1:
                 art = userprofile.queue5
                 userprofile.queue5 = -1
+                userprofile.save(update_fields=["queue5"]
             elif userprofile.queue4 != -1:
                 art = userprofile.queue4
                 userprofile.queue4 = -1
+                userprofile.save(update_fields=["queue4"]
             elif userprofile.queue3 != -1:
                 art = userprofile.queue3
                 userprofile.queue3 = -1
+                userprofile.save(update_fields=["queue3"]
             elif userprofile.queue2 != -1:
                 art = userprofile.queue2
                 userprofile.queue2 = -1
+                userprofile.save(update_fields=["queue2"]
             elif userprofile.queue1 != -1:
                 art = userprofile.queue1
                 userprofile.queue1 = -1
+                userprofile.save(update_fields=["queue1"]
             else:
                 art = userprofile.queue0
                 userprofile.queue0 = -1
-
-            # Only update queue fields 
-            # TODO: This should be done individually for each if/else block
-            userprofile.save(update_fields=["queue8", "queue7", "queue6", "queue5", "queue4", "queue3", "queue2", "queue1", "queue0"])
+                userprofile.save(update_fields=["queue0"]
 
         else:
             start = timeit.default_timer()
@@ -133,14 +133,25 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             profile = np.asarray(profile)
             profile = profile / (userprofile.computerArtLiked + userprofile.humanArtLiked)
             
-            # Get distances between user_profile and each piece of art
+           # Get distances between user_profile and each piece of art
             distances = []
             for artId in range(6924):
-                distances.append(np.linalg.norm(profile - np.asarray(Artwork.objects.get(recommenderArtId=artId).features)))
+                #distances.append(np.linalg.norm(profile - np.asarray(Artwork.objects.get(recommenderArtId=artId).features)))
+                
+                distances.append(cosine(profile, np.asarray(Artwork.objects.get(recommenderArtId=artId).features)))
+                
+
+
+                #print("ART:{}, DISTANCE:{} | ".format(artId, distances[-1]), end="")
                 #print("PROGRESS: {}".format(artId))
 
             # Collect the art IDs of the closest art's to the user's profile
             closest_sorted = np.asarray(distances).argsort()
+           # print(closest_sorted)
+
+            # Debugging
+            print("Distance max: {}".format(max(distances)))
+            print("Distance min: {}".format(min(distances)))
 
             # Find 10 arts the user hasn't seen which are most similar to their current profile
             artQueue = []
@@ -154,10 +165,6 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
 
             # Take the most-similar art and queue the rest
             art = artQueue.pop(0)
-            print("ARTQUEUE: {}".format(artQueue))
-#            userprofile.queue = artQueue
-#            userprofile.save()
-            
 
             userprofile.queue8 = artQueue.pop(0)
             userprofile.queue7 = artQueue.pop(0)
@@ -169,10 +176,11 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             userprofile.queue1 = artQueue.pop(0)
             userprofile.queue0 = artQueue.pop(0)
 
-            print("LOCALLY: {}".format(userprofile.queue0))
-            userprofile.save()
-            print("Recommended 10 arts in {} seconds".format((timeit.default_timer() - start)))
+            userprofile.save(update_fields=["queue8", "queue7", "queue6", "queue5", "queue4", "queue3", "queue2", "queue1", "queue0"])
             
+            # PROFILING
+            print("Recommended 10 arts in {} seconds".format((timeit.default_timer() - start)))
+
         queryset = Artwork.objects.get(recommenderArtId=art)
         return Response(ArtworkSerializer(queryset).data)
 
