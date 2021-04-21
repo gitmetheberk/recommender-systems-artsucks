@@ -30,9 +30,14 @@ import numpy as np
 import copy
 from scipy.spatial.distance import cosine
 
-
 # PROFILING
 import timeit
+
+# Configuration
+import sys
+np.set_printoptions(threshold=sys.maxsize)
+np.seterr(divide='ignore', invalid='ignore') # Always good practice to ignore errors, right?
+
 
 # Database API views
 class ArtworkView(viewsets.ModelViewSet):
@@ -91,39 +96,39 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             if userprofile.queue8 != -1:
                 art = userprofile.queue8
                 userprofile.queue8 = -1
-                userprofile.save(update_fields=["queue8"]
+                userprofile.save(update_fields=["queue8"])
             elif userprofile.queue7 != -1:
                 art = userprofile.queue7
                 userprofile.queue7 = -1
-                userprofile.save(update_fields=["queue7"]
+                userprofile.save(update_fields=["queue7"])
             elif userprofile.queue6 != -1:
                 art = userprofile.queue6
                 userprofile.queue6 = -1
-                userprofile.save(update_fields=["queue6"]
+                userprofile.save(update_fields=["queue6"])
             elif userprofile.queue5 != -1:
                 art = userprofile.queue5
                 userprofile.queue5 = -1
-                userprofile.save(update_fields=["queue5"]
+                userprofile.save(update_fields=["queue5"])
             elif userprofile.queue4 != -1:
                 art = userprofile.queue4
                 userprofile.queue4 = -1
-                userprofile.save(update_fields=["queue4"]
+                userprofile.save(update_fields=["queue4"])
             elif userprofile.queue3 != -1:
                 art = userprofile.queue3
                 userprofile.queue3 = -1
-                userprofile.save(update_fields=["queue3"]
+                userprofile.save(update_fields=["queue3"])
             elif userprofile.queue2 != -1:
                 art = userprofile.queue2
                 userprofile.queue2 = -1
-                userprofile.save(update_fields=["queue2"]
+                userprofile.save(update_fields=["queue2"])
             elif userprofile.queue1 != -1:
                 art = userprofile.queue1
                 userprofile.queue1 = -1
-                userprofile.save(update_fields=["queue1"]
+                userprofile.save(update_fields=["queue1"])
             else:
                 art = userprofile.queue0
                 userprofile.queue0 = -1
-                userprofile.save(update_fields=["queue0"]
+                userprofile.save(update_fields=["queue0"])
 
         else:
             start = timeit.default_timer()
@@ -131,27 +136,48 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             # Find user's average profile
             profile = userprofile.feature_profile
             profile = np.asarray(profile)
-            profile = profile / (userprofile.computerArtLiked + userprofile.humanArtLiked)
-            
+            profile = profile / np.asarray(userprofile.feature_occurrences)
+            np.nan_to_num(profile, copy=False)
+            print("PROFILE AVERAGE: {}".format(np.average(profile)))
+            #print("PROFILE:")
+            #print(profile)
+        
            # Get distances between user_profile and each piece of art
             distances = []
             for artId in range(6924):
+                # Euclidean, using the feature_occurrences
                 #distances.append(np.linalg.norm(profile - np.asarray(Artwork.objects.get(recommenderArtId=artId).features)))
-                
-                distances.append(cosine(profile, np.asarray(Artwork.objects.get(recommenderArtId=artId).features)))
-                
+
+                # Breakout for debugging
+                #artfeatures = np.asarray(Artwork.objects.get(recommenderArtId=artId).features)
+                #result = profile-artfeatures
+                #np.nan_to_num(result, copy=False)
+                #linalg = np.linalg.norm(result)
+                #print("Profile: {}\nArtwork features: {}\nResult: {}\nLinalg: {}".format("", "", "result", linalg))
+                #print("Is NORM Nan? {}".format("Yes" if np.isnan(linalg) else "no"))
+
+                #distances.append(linalg)
+                artfeatures = np.asarray(Artwork.objects.get(recommenderArtId=artId).features)
+                distances.append(cosine(profile, artfeatures))
+                #print(distances[-1])
+
+
+
 
 
                 #print("ART:{}, DISTANCE:{} | ".format(artId, distances[-1]), end="")
                 #print("PROGRESS: {}".format(artId))
 
-            # Collect the art IDs of the closest art's to the user's profile
+            # Collect the art IDs of the closest art's to the user's profile (sort smallest to largest)
+            #print(distances)
             closest_sorted = np.asarray(distances).argsort()
-           # print(closest_sorted)
+            
+            print("Closest, front: {}".format(distances[closest_sorted[0]]))
+            print("Closest, back:  {}".format(distances[closest_sorted[-1]]))
 
             # Debugging
-            print("Distance max: {}".format(max(distances)))
-            print("Distance min: {}".format(min(distances)))
+            #print("Distance max: {}".format(max(distances)))
+            #print("Distance min: {}".format(min(distances)))
 
             # Find 10 arts the user hasn't seen which are most similar to their current profile
             artQueue = []

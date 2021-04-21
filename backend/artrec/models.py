@@ -8,6 +8,9 @@ from django.db.models.signals import post_save
 from django.core.signals import request_finished
 from django.dispatch import receiver
 
+# Other imports
+import numpy as np
+
 # PERFORMANCE PROFILING
 import timeit
 
@@ -51,6 +54,12 @@ class UserProfile(models.Model):
     queue2 = models.IntegerField(default=-1)
     queue1 = models.IntegerField(default=-1)
     queue0 = models.IntegerField(default=-1)
+
+    # Note: There is a strong liklihood this turns out to be a very bad idea
+    # JSONField to track individual sums for each feature (just go with it)
+    feature_occurrences = models.JSONField(default=list)
+
+
 
 # One entry for every user interaction, a like or a dislike
 class HistoryLine(models.Model):
@@ -105,10 +114,18 @@ def new_history(sender, instance=None, created=False, **kwargs):
             # If this is the user's first art, it is their entire profile
             if not instance.user.feature_profile:
                 instance.user.feature_profile = instance.artwork.features
+
+                # Initalize zero vector for occurrences
+                instance.user.feature_occurrences = [0] * 2048
             else:
                 # Add the image's features to this user's feature set
                 instance.user.feature_profile = [sum(i) for i in zip(instance.user.feature_profile, instance.artwork.features)]
 
+            # Implement: A very bad idea
+            # Only add to individual sums if the artwork in question has some value for that feature
+            instance.user.feature_occurrences = (np.where(np.asarray(instance.artwork.features)>0,1,0) + np.asarray(instance.user.feature_occurrences)).tolist()
+
+
             # To avoid race conditions, only update needed fields
-            instance.user.save(update_fields=["feature_profile", "humanArtLiked", "computerArtLiked"])
+            instance.user.save(update_fields=["feature_profile", "humanArtLiked", "computerArtLiked", "feature_occurrences"])
             print("user.feature_profile update took {} seconds".format((timeit.default_timer() - start)))

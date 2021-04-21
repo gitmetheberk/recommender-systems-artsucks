@@ -13,7 +13,6 @@ class ArtworkAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id', 'recommenderUserId', 'user', 'humanArtLiked', 'computerArtLiked')
 
-
 class HistoryLineAdmin(admin.ModelAdmin):
     list_display = ('id', 'status', 'weight', 'updated')
     raw_id_fields = ('artwork','user',)
