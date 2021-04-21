@@ -139,39 +139,56 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             profile = profile / np.asarray(userprofile.feature_occurrences)
             np.nan_to_num(profile, copy=False)
             print("PROFILE AVERAGE: {}".format(np.average(profile)))
-            #print("PROFILE:")
-            #print(profile)
         
-           # Get distances between user_profile and each piece of art
+            # VERY, VERY EXPERIMENTAL CODE
+            # Find the 1000 most "important" features for this user
+            # (Aka find the 1000 features which have appeared the most in art's the user liked)
+            mostImportant = np.asarray(userprofile.feature_occurrences).argsort()[::-1][:1000]
+
+             # Get distances between user_profile and each piece of art
+            num_features = 0
             distances = []
             for artId in range(6924):
+                # Option Z:
                 # Euclidean, using the feature_occurrences
-                #distances.append(np.linalg.norm(profile - np.asarray(Artwork.objects.get(recommenderArtId=artId).features)))
+                # distances.append(np.linalg.norm(profile - np.asarray(Artwork.objects.get(recommenderArtId=artId).features)))
+                
 
-                # Breakout for debugging
-                #artfeatures = np.asarray(Artwork.objects.get(recommenderArtId=artId).features)
-                #result = profile-artfeatures
-                #np.nan_to_num(result, copy=False)
-                #linalg = np.linalg.norm(result)
-                #print("Profile: {}\nArtwork features: {}\nResult: {}\nLinalg: {}".format("", "", "result", linalg))
-                #print("Is NORM Nan? {}".format("Yes" if np.isnan(linalg) else "no"))
 
-                #distances.append(linalg)
+                # Grab the features for the artwork
                 artfeatures = np.asarray(Artwork.objects.get(recommenderArtId=artId).features)
-                distances.append(cosine(profile, artfeatures))
-                #print(distances[-1])
+                
+                # Create an array detailing which features are non-zero
+                validArtFeatures = np.where(artfeatures > 0)
+
+
+                # Option A: Don't use the "mostImportant" features
+                # Find the intersection of the user's most important features and this art's non-zero features
+                # featuresToCheck = validArtFeatures#np.intersect1d(validArtFeatures, mostImportant)
+                # num_features+= len(validArtFeatures[0])#featuresToCheck.shape[0]
+                
+
+                # Option B: Use only the "mostImportant" features
+                # Find the intersection of the user's most important features and this art's non-zero features
+                featuresToCheck = np.intersect1d(validArtFeatures, mostImportant)
+                num_features+= featuresToCheck.shape[0]
 
 
 
-
-
-                #print("ART:{}, DISTANCE:{} | ".format(artId, distances[-1]), end="")
-                #print("PROGRESS: {}".format(artId))
+                # Option A2: Use the cosine distance
+                # Append the cosine distance between the featuresTocheck for this user and this art
+                # distances.append(cosine(profile[featuresToCheck], artfeatures[featuresToCheck]))
+                
+                
+                # Option B2: Use the euclidean distance
+                # Append the euclidean distance between the featuresToCheck for this user and this art
+                distances.append(np.linalg.norm(profile[featuresToCheck] - artfeatures[featuresToCheck]))
+                
 
             # Collect the art IDs of the closest art's to the user's profile (sort smallest to largest)
             #print(distances)
             closest_sorted = np.asarray(distances).argsort()
-            
+            print("Average features used: {}".format(round(num_features/len(distances))))
             print("Closest, front: {}".format(distances[closest_sorted[0]]))
             print("Closest, back:  {}".format(distances[closest_sorted[-1]]))
 
@@ -205,7 +222,7 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             userprofile.save(update_fields=["queue8", "queue7", "queue6", "queue5", "queue4", "queue3", "queue2", "queue1", "queue0"])
             
             # PROFILING
-            print("Recommended 10 arts in {} seconds".format((timeit.default_timer() - start)))
+            print("Recommended 10 arts in {} seconds".format(round((timeit.default_timer() - start))))
 
         queryset = Artwork.objects.get(recommenderArtId=art)
         return Response(ArtworkSerializer(queryset).data)
