@@ -114,8 +114,12 @@ def new_history(sender, instance=None, created=False, **kwargs):
                 # Initalize zero vector for occurrences
                 instance.user.feature_occurrences = [0] * 2048
             else:
+                # Normalize the images features
+                features = np.asarray(instance.artwork.features)
+                features = features / np.linalg.norm(features)
+
                 # Add the image's features to this user's feature set
-                instance.user.feature_profile = [sum(i) for i in zip(instance.user.feature_profile, instance.artwork.features)]
+                instance.user.feature_profile = [sum(i) for i in zip(instance.user.feature_profile, features.tolist())]
 
             # Implement: A very bad idea
             # Only add to individual sums if the artwork in question has some value for that feature
