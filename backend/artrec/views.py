@@ -176,16 +176,14 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
                 featuresToCheck = np.intersect1d(validArtFeatures, mostImportant)
                 num_features.append(featuresToCheck.shape[0])
 
-
-
                 # Option A2: Use the cosine distance
                 # Append the cosine distance between the featuresTocheck for this user and this art
-                # distances.append(cosine(profile[featuresToCheck], artfeatures[featuresToCheck]))
+                distances.append(cosine(profile[featuresToCheck], artfeatures[featuresToCheck]))
                 
                 
                 # Option B2: Use the euclidean distance
                 # Append the euclidean distance between the featuresToCheck for this user and this art
-                distances.append(np.linalg.norm(profile[featuresToCheck] - artfeatures[featuresToCheck]))
+                # distances.append(np.linalg.norm(profile[featuresToCheck] - artfeatures[featuresToCheck]))
                 
 
             # Collect the art IDs of the closest art's to the user's profile (sort smallest to largest)
@@ -196,8 +194,7 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             print("Average user profile feature value: {}".format(round(np.average(profile), 5)))
             print("Average features used: {}".format(round(np.sum(num_features)/len(distances))))
             print("Max features used: {}, Min features used: {}".format(max(num_features), min(num_features)))
-            print("Distance max: {}".format(round(max(distances), 2)))
-            print("Distance min: {}".format(round(min(distances), 2)))
+            print("Distance max: {}, Distance min: {}".format(round(distances[closest_sorted[-1]], 2), round(distances[closest_sorted[0]], 2)))
 
             # Find 10 arts the user hasn't seen which are most similar to their current profile
             already_seen = 0  # This variable is used purely for debugging
