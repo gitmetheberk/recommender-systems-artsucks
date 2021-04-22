@@ -94,8 +94,8 @@ class ImageWindow extends Component {
                         </img>
 		    </div>
                     <div className="pt-1">
-                        <button onClick={() => this.handleClick(false)} className="btn btn-warning w-50" disabled>Processing</button>
-                        <button onClick={() => this.handleClick(true)} className="btn btn-success w-50" disabled>Processing</button>
+                        <button onClick={() => this.handleClick(false)} className="btn btn-warning w-50" disabled>Processing...</button>
+                        <button onClick={() => this.handleClick(true)} className="btn btn-success w-50" disabled>Processing...</button>
 		    </div>
                 </div>
             );
