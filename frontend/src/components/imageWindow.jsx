@@ -33,7 +33,6 @@ class ImageWindow extends Component {
         })
     }
 
-    // TODO: When a user likes or dislikes an image, disable the buttons until the .then in getNewImage()
     // Runs when either like or dislike is clicked, liked=true if liked, else dislike
     handleClick(liked){
         // Send a post request updating the user's rating for the image

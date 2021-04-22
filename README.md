@@ -36,5 +36,4 @@ This will be done with some magic function involving CNNs.
 * https://nemecek.be/blog/23/how-to-createregister-user-account-with-django-rest-framework-api
 * https://stackoverflow.com/questions/20555673/django-query-get-last-n-records
 * https://stackoverflow.com/questions/32679945/django-rest-framework-custom-post-permissions
-* https://lingojam.com/FancyTextGenerator
 * TODO: Complete sources/libraries
