@@ -36,7 +36,6 @@ import timeit
 # Configuration
 import sys
 np.set_printoptions(threshold=sys.maxsize)
-np.seterr(divide='ignore', invalid='ignore') # Always good practice to ignore errors, right?
 
 
 # Database API views
@@ -73,6 +72,9 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
     # The userprofile object has a field 'recommenderUserId' which needs to be set on first processing
     # for the user, and is manually controlled
     def list(self, request):
+        # Configure numpy to ignore some warnings
+        np.seterr(divide='ignore', invalid='ignore')  # As far as I can tell, this doesn't work, but I can't explain it
+
         # Grabs the user object and the userprofile object from the auth token to be used later
         user, userprofile = resolveuserfromrequest(request)
 
@@ -132,21 +134,20 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
 
         else:
             start = timeit.default_timer()
-
+            print("BEGIN PROCESSING RECOMMENDATIONS for {}".format(user.username))
+            
             # Find user's average profile
             profile = userprofile.feature_profile
             profile = np.asarray(profile)
             profile = profile / np.asarray(userprofile.feature_occurrences)
             np.nan_to_num(profile, copy=False)
-            print("PROFILE AVERAGE: {}".format(np.average(profile)))
-        
-            # VERY, VERY EXPERIMENTAL CODE
+
             # Find the 1000 most "important" features for this user
             # (Aka find the 1000 features which have appeared the most in art's the user liked)
             mostImportant = np.asarray(userprofile.feature_occurrences).argsort()[::-1][:1000]
 
              # Get distances between user_profile and each piece of art
-            num_features = 0
+            num_features = []  # This is purely used for profiling/debugging
             distances = []
             for artId in range(6924):
                 # Option Z:
@@ -165,13 +166,13 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
                 # Option A: Don't use the "mostImportant" features
                 # Find the intersection of the user's most important features and this art's non-zero features
                 # featuresToCheck = validArtFeatures#np.intersect1d(validArtFeatures, mostImportant)
-                # num_features+= len(validArtFeatures[0])#featuresToCheck.shape[0]
+                # num_features.append(len(validArtFeatures[0]))
                 
 
                 # Option B: Use only the "mostImportant" features
                 # Find the intersection of the user's most important features and this art's non-zero features
                 featuresToCheck = np.intersect1d(validArtFeatures, mostImportant)
-                num_features+= featuresToCheck.shape[0]
+                num_features.append(featuresToCheck.shape[0])
 
 
 
@@ -188,15 +189,16 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             # Collect the art IDs of the closest art's to the user's profile (sort smallest to largest)
             #print(distances)
             closest_sorted = np.asarray(distances).argsort()
-            print("Average features used: {}".format(round(num_features/len(distances))))
-            print("Closest, front: {}".format(distances[closest_sorted[0]]))
-            print("Closest, back:  {}".format(distances[closest_sorted[-1]]))
-
-            # Debugging
-            #print("Distance max: {}".format(max(distances)))
-            #print("Distance min: {}".format(min(distances)))
+            
+            # Print some information about the calculations which just took place
+            print("Average user profile feature value: {}".format(round(np.average(profile), 5)))
+            print("Average features used: {}".format(round(np.sum(num_features)/len(distances))))
+            print("Max features used: {}, Min features used: {}".format(max(num_features), min(num_features)))
+            print("Distance max: {}".format(round(max(distances), 2)))
+            print("Distance min: {}".format(round(min(distances), 2)))
 
             # Find 10 arts the user hasn't seen which are most similar to their current profile
+            already_seen = 0  # This variable is used purely for debugging
             artQueue = []
             for artId in closest_sorted:
                 # Get the art object from the art id
@@ -205,6 +207,8 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
                     artQueue.append(int(artId))
                     if len(artQueue) == 10:
                         break
+                else:
+                    already_seen += 1
 
             # Take the most-similar art and queue the rest
             art = artQueue.pop(0)
@@ -215,14 +219,19 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             userprofile.queue5 = artQueue.pop(0)
             userprofile.queue4 = artQueue.pop(0)
             userprofile.queue3 = artQueue.pop(0)
+
+            # TODO: Implement a random art for this queue slot to produce serendipity
             userprofile.queue2 = artQueue.pop(0)
+            
             userprofile.queue1 = artQueue.pop(0)
             userprofile.queue0 = artQueue.pop(0)
 
+            # Update the user profile queue fields
             userprofile.save(update_fields=["queue8", "queue7", "queue6", "queue5", "queue4", "queue3", "queue2", "queue1", "queue0"])
             
-            # PROFILING
-            print("Recommended 10 arts in {} seconds".format(round((timeit.default_timer() - start))))
+            # Logging
+            print("Ignored {} arts already seen by the user".format(already_seen))
+            print("FINISH PROCESSING RECOMMENDATIONS for {}, processed in {} seconds".format(user.username, round((timeit.default_timer() - start), 1)))
 
         queryset = Artwork.objects.get(recommenderArtId=art)
         return Response(ArtworkSerializer(queryset).data)
