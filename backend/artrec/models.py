@@ -11,8 +11,6 @@ from django.dispatch import receiver
 # Other imports
 import numpy as np
 
-# PERFORMANCE PROFILING
-import timeit
 
 # Create your models here.
 # One entry for every piece of art in our database
