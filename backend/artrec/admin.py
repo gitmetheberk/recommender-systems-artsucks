@@ -49,7 +49,7 @@ def UserProfile_generateReports(modeladmin, request, queryset):
             if not processed:
                 if line.status == 'L':
                     likeCount += 1
-                    if likeCount == 14:
+                    if likeCount == 20:
                         processed = True
                 
             # Processing complete, proceed normally

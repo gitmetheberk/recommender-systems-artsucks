@@ -82,13 +82,15 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
         #  art = recommender.recommendArt(user, userprofile)
         art = 0
         
-        # Randomly get an art for the user if they've liked < 15 arts
-        # (Set to 14 due to ASYNC nonsense)
+        # Randomly get an art for the user if they've liked < 20 arts
         history = HistoryLine.objects.filter(user=userprofile, status='L')
-        if len(history) < 14:
+        if len(history) < 20:
             # TODO: The upper bound should be found programatically
+            # FIXME: This upper bound needs to be updated following database reformatting with new features
             # Generate random arts until we find one the user hasn't seen yet
             art = randint(0,6923)
+
+            # FIXME: This doesn't appear to be working as expected
             while HistoryLine.objects.filter(user=userprofile, artwork=Artwork.objects.get(recommenderArtId=art)).exists():
                 art = randint(0,6923)
         
