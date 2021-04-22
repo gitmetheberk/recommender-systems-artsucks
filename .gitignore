@@ -4,6 +4,9 @@ migrations/
 # Ignore images in the django static images directory
 backend/static/images/
 
+# Ignore reports in the django static reports directory
+backend/static/reports/
+
 # Ignore log files
 *.log
 
