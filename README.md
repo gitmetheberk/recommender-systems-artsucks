@@ -36,4 +36,6 @@ This will be done with some magic function involving CNNs.
 * https://nemecek.be/blog/23/how-to-createregister-user-account-with-django-rest-framework-api
 * https://stackoverflow.com/questions/20555673/django-query-get-last-n-records
 * https://stackoverflow.com/questions/32679945/django-rest-framework-custom-post-permissions
+* https://hakibenita.medium.com/how-to-add-custom-action-buttons-to-django-admin-8d266f5b0d41
+* https://stackoverflow.com/questions/10607688/how-to-create-a-file-name-with-the-current-date-time-in-python
 * TODO: Complete sources/libraries
