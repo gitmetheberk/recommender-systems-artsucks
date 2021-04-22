@@ -102,8 +102,6 @@ def new_user(sender, instance=None, created=False, **kwargs):
 @receiver(post_save, sender=HistoryLine)
 def new_history(sender, instance=None, created=False, **kwargs):
     if created:
-        start = timeit.default_timer()
-
         # If the user liked the art, add the tally and add to their feature profile
         if instance.status == "L":
             if instance.artwork.humanGenerated:
@@ -128,4 +126,3 @@ def new_history(sender, instance=None, created=False, **kwargs):
 
             # To avoid race conditions, only update needed fields
             instance.user.save(update_fields=["feature_profile", "humanArtLiked", "computerArtLiked", "feature_occurrences"])
-            print("user.feature_profile update took {} seconds".format((timeit.default_timer() - start)))
