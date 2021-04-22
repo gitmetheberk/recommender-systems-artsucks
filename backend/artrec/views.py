@@ -64,13 +64,7 @@ class HistoryLineView(viewsets.ModelViewSet):
 class GetNewArt(viewsets.ReadOnlyModelViewSet):
     permission_classes = (IsAuthenticated,)
 
-    # TODO: This function is where the recommender should return the next piece of art to show
-    # to the user. The function expects only the auth token in and, after verifying which user
-    # the token belongs to, this is the function which should then return the next piece of art
-    # Right now it's only returning a random piece of art, but all you have to do recommender-wise is
-    # Set the value of 'art' to the ID of the piece of art we want to recommend
-    # The userprofile object has a field 'recommenderUserId' which needs to be set on first processing
-    # for the user, and is manually controlled
+    # This function contains the recommender engine
     def list(self, request):
         # Configure numpy to ignore some warnings
         np.seterr(divide='ignore', invalid='ignore')  # As far as I can tell, this doesn't work, but I can't explain it

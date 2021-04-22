@@ -37,7 +37,8 @@ def UserProfile_generateReports(modeladmin, request, queryset):
 
         # If this user doesn't have enough likes/total ratings skip
         if history_count < 25 or history_likes < 15:
-            file.write("Further caluclations aborted due to low interactions")
+            file.write("Report generation aborted due to low interactions\n\n")
+            file.write("-----------------------\n")
             continue
 
         # Load all user history into a list for ease of use where 1 = L and 0 = D
@@ -83,7 +84,7 @@ def UserProfile_generateReports(modeladmin, request, queryset):
             percentChange = ((new_ratio / hist_ratio) - 1) * 100
 
             # Write the results (in a very inefficient manner since the multi-line string didn't want to cooperate)
-            file.write("Evaluating performance of most recent interactions ({}/{})\n".format(round(split*100), 100-round(split*100)))
+            file.write("Evaluating performance of most recent interactions ({1:}/{0:})\n".format(round(split*100), 100-round(split*100)))
             file.write("    Historical data | Newest Data\n")
             file.write("Num. Likes: {0:<5}   | {1:<5}  \n".format(hist_likes, new_likes))
             file.write("% Liked:    {0:<5} % | {1:<5} %\n".format(round(hist_ratio * 100, 2),round(new_ratio * 100, 2)))
