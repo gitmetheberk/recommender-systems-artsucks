@@ -41,4 +41,3 @@ Due to a number of recent changes to the project stucture, running the this app 
 * https://stackoverflow.com/questions/32679945/django-rest-framework-custom-post-permissions
 * https://hakibenita.medium.com/how-to-add-custom-action-buttons-to-django-admin-8d266f5b0d41
 * https://stackoverflow.com/questions/10607688/how-to-create-a-file-name-with-the-current-date-time-in-python
-* TODO: Complete sources/libraries
