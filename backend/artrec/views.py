@@ -82,11 +82,11 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             # TODO: The upper bound should be found programatically
             # FIXME: This upper bound needs to be updated following database reformatting with new features
             # Generate random arts until we find one the user hasn't seen yet
-            art = randint(0,6923)
+            art = randint(0,6661)
 
             # FIXME: This doesn't appear to be working as expected
             while HistoryLine.objects.filter(user=userprofile, artwork=Artwork.objects.get(recommenderArtId=art)).exists():
-                art = randint(0,6923)
+                art = randint(0,6661)
         
         elif userprofile.queue0 != -1:
             # Return an art from the queue
@@ -145,7 +145,7 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
              # Get distances between user_profile and each piece of art
             num_features = []  # This is purely used for profiling/debugging
             distances = []
-            for artId in range(6924):
+            for artId in range(6662):
                 # Option Z:
                 # Euclidean, using the feature_occurrences
                 # distances.append(np.linalg.norm(profile - np.asarray(Artwork.objects.get(recommenderArtId=artId).features)))
