@@ -79,11 +79,8 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
         history = HistoryLine.objects.filter(user=userprofile, status='L')
         if len(history) < 20:
             # TODO: The upper bound should be found programatically
-            # FIXME: This upper bound needs to be updated following database reformatting with new features
             # Generate random arts until we find one the user hasn't seen yet
             art = randint(0,6661)
-
-            # FIXME: This doesn't appear to be working as expected
             while HistoryLine.objects.filter(user=userprofile, artwork=Artwork.objects.get(recommenderArtId=art)).exists():
                 art = randint(0,6661)
         
@@ -189,7 +186,7 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             print("Max features used: {}, Min features used: {}".format(max(num_features), min(num_features)))
             print("Distance max: {}, Distance min: {}".format(round(distances[closest_sorted[-1]], 2), round(distances[closest_sorted[0]], 2)))
 
-            # Find 10 arts the user hasn't seen which are most similar to their current profile
+            # Find 9 arts the user hasn't seen which are most similar to their current profile
             already_seen = 0  # This variable is used purely for debugging
             artQueue = []
             for artId in closest_sorted:
@@ -197,7 +194,7 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
                 art_object = Artwork.objects.get(recommenderArtId=artId)
                 if not HistoryLine.objects.filter(user=userprofile, artwork=art_object).exists():
                     artQueue.append(int(artId))
-                    if len(artQueue) == 10:
+                    if len(artQueue) == 9:
                         break
                 else:
                     already_seen += 1
@@ -211,12 +208,17 @@ class GetNewArt(viewsets.ReadOnlyModelViewSet):
             userprofile.queue5 = artQueue.pop(0)
             userprofile.queue4 = artQueue.pop(0)
             userprofile.queue3 = artQueue.pop(0)
-
-            # TODO: Implement a random art for this queue slot to produce serendipity
-            userprofile.queue2 = artQueue.pop(0)
-            
             userprofile.queue1 = artQueue.pop(0)
             userprofile.queue0 = artQueue.pop(0)
+
+            # For this queue slot, we use a random artwork instead of the similar artwork
+            # This helps prevent the user's profile from getting stuck in one place though may make results worse overall
+            # Theoretically the serendipity is more beneficial in the long run. Ideally we could test this with A/B, but deadlines and what not so here we are
+            randomArt = randint(0,6661)
+            while HistoryLine.objects.filter(user=userprofile, artwork=Artwork.objects.get(recommenderArtId=randomArt)).exists():
+                randomArt = randint(0,6661)
+
+            userprofile.queue2 = randomArt
 
             # Update the user profile queue fields
             userprofile.save(update_fields=["queue8", "queue7", "queue6", "queue5", "queue4", "queue3", "queue2", "queue1", "queue0"])
