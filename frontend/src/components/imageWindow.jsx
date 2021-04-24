@@ -80,7 +80,7 @@ class ImageWindow extends Component {
             return (
                 <div>
                     <h3>Howdy! Please log in to receive your full art appreciation experience</h3>
-                    <button onClick={() => this.checkLoggedIn()} className="btn btn-danger btn-block btn-lg">I have logged in and I am ready to appreciate art</button>
+                    <button onClick={() => this.checkLoggedIn()} className="btn btn-danger btn-block btn-lg">I have logged in and I am ready to appreciate art!</button>
                 </div>
             )
         } else if (this.state.imageId === -2){
