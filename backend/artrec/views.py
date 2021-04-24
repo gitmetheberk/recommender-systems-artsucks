@@ -25,7 +25,6 @@ from rest_framework.authtoken.models import Token
 
 # Functional API imports
 from random import randint
-import recommender
 import numpy as np
 import copy
 from scipy.spatial.distance import cosine
