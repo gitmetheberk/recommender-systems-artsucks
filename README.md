@@ -32,6 +32,9 @@ This will be done with some magic function involving CNNs.
 ### A note on running locally
 Due to a number of recent changes to the project stucture, running the this app on a local machine for testing/development is no longer a viable solution. For example, the database has been migrated from an sqlite3 database (which is stored as a simple file) to a full on MySQL database which needs to be hosted along with the app's frontend and backend servers. Beyond this, the images are not hosted in the repository due to their size and would have to be downloaded and placed in the backend/static/images folder manually after correcting the odd characters in the Albrecht Durer works. Beyond this, the MySQL database needs to be loaded up with the invidual artworks from a csv import due to the size of the json objects. While the scripts to do this are present in the auxillary directory, this is not recommended due to the relative difficulty of getting everything up and running locally.
 
+### Class presentation:
+[Click here to see our class presentation on the ArtSucks Art Recommender](https://docs.google.com/presentation/d/1t8G_uUY_wcEdB5MRNf1UVo5404CioeWgXtQt7KKd-qg/edit?usp=sharing)
+
 ### Sources/Libraries
 * create-react-app - https://github.com/facebook/create-react-app
 * tutorial: https://www.digitalocean.com/community/tutorials/build-a-to-do-application-using-django-and-react
